@@ -67,11 +67,36 @@
   with the name being used.
   ====================*/
 void first_pass() {
-  //in order to use name and num_frames throughout
-  //they must be extern variables
-  extern int num_frames;
-  extern char name[128];
-
+	//in order to use name and num_frames throughout
+	//they must be extern variables
+	extern int num_frames = 0;
+	extern char name[128];
+	int has_frames = 0, has_vary = 0, has_name = 0;
+	int i;
+	for (i = 0; i < lastop; i ++) {
+		switch (op[i].opcode) {
+			case FRAMES :
+				if (has_frames) {
+					printf("ERROR: Found multple FRAMES commands!\n");
+					exit(0);
+				}
+				has_frames = 1;
+				num_frames = op[i].op.frames.num_frames;
+				break;
+			case BASENAME :
+				has_name = 1;
+				strcpy(name, op[i].op.basename.p);
+				break;
+			case VARY :
+				has_vary = 1;
+				break;
+		}
+	}
+	if (has_vary && !has_frames) {
+		printf("ERROR: Found VARY command(s) without FRAMES!\n");
+		exit(0);
+	}
+	if (has_frames && != has_name)
 }
 
 /*======== struct vary_node ** second_pass() ==========
