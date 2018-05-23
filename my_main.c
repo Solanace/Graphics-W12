@@ -101,8 +101,8 @@ void first_pass() {
 		exit(0);
 	}
 	if (has_frames && !has_name) {
-		strcpy(name, "bola");
-		printf("NOTE: FRAMES found without BASENAME - defaulting to \"bola\"\n");
+		strcpy(name, "boluo");
+		printf("NOTE: FRAMES found without BASENAME - defaulting to \"boluo\"\n");
 	}
 }
 
@@ -127,9 +127,12 @@ void first_pass() {
   ====================*/
 struct vary_node ** second_pass() {
 	struct vary_node **knobs = calloc(num_frames, sizeof(struct vary_node *));
-	int op_num;
-	for (op_num = 0; op_num < lastop; op_num ++) {
-		
+	int i, j; // i loops through the opcode array, j loops through the knobs array
+	for (i = 0; i < lastop; i ++) {
+		if (op[i].opcode == VARY) {
+			for (j = 0; j < num_frames - 1; j ++) {
+			}
+		}
 	}
 	return knobs;
 }
