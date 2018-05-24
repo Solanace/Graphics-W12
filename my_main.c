@@ -130,7 +130,19 @@ struct vary_node ** second_pass() {
 	int i, j; // i loops through the opcode array, j loops through the knobs array
 	for (i = 0; i < lastop; i ++) {
 		if (op[i].opcode == VARY) {
-			for (j = 0; j < num_frames - 1; j ++) {
+			double start_frame = op[i].op.vary.start_frame,
+			       end_frame = op[i].op.vary.end_frame,
+			       start_val = op[i].op.vary.start_val,
+			       end_val = op[i].op.vary.end_val;
+			double delta_val = (end_val - start_val) / (end_frame - start_frame + 1);
+			for (j = start_frame; j <= end_frame; j ++) {
+				struct vary_node *tail = knobs[j];
+
+				if (!tail) tail = (struct vary_node *)malloc(sizeof(struct vary_node));
+				else while (!(tail->next)) tail = tail->next;
+
+				strcpy(tail->name, op[i].op.vary.p->name);
+				tail->value = start_val + j * delta_val;
 			}
 		}
 	}
@@ -308,7 +320,7 @@ void my_main() {
 					op[i].op.box.d0[2],
 					op[i].op.box.d1[0],op[i].op.box.d1[1],
 					op[i].op.box.d1[2]);
-					matrix_mult( peek(systems), tmp );
+					matrix_mult(peek(systems), tmp);
 					draw_polygons(tmp, t, zb, view, light, ambient,
 					areflect, dreflect, sreflect);
 					tmp->lastcol = 0;
@@ -346,9 +358,8 @@ void my_main() {
 					zval = op[i].op.move.d[2];
 					printf("Move: %6.2f %6.2f %6.2f",
 					xval, yval, zval);
-					if (op[i].op.move.p != NULL)
-					{
-					printf("\tknob: %s",op[i].op.move.p->name);
+					if (op[i].op.move.p != NULL) {
+						printf("\tknob: %s",op[i].op.move.p->name);
 					}
 					tmp = make_translate( xval, yval, zval );
 					matrix_mult(peek(systems), tmp);
@@ -361,9 +372,8 @@ void my_main() {
 					zval = op[i].op.scale.d[2];
 					printf("Scale: %6.2f %6.2f %6.2f",
 					xval, yval, zval);
-					if (op[i].op.scale.p != NULL)
-					{
-					printf("\tknob: %s",op[i].op.scale.p->name);
+					if (op[i].op.scale.p != NULL) {
+						printf("\tknob: %s",op[i].op.scale.p->name);
 					}
 					tmp = make_scale( xval, yval, zval );
 					matrix_mult(peek(systems), tmp);
