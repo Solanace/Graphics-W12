@@ -126,29 +126,32 @@ void first_pass() {
   appropirate value.
   ====================*/
 struct vary_node **second_pass() {
+	printf("Start of second pass\n");
 	struct vary_node **knobs = calloc(num_frames, sizeof(struct vary_node *));
 	int i, j; // i loops through the opcode array, j loops through the knobs array
 	for (i = 0; i < lastop; i ++) {
 		if (op[i].opcode == VARY) {
+			//printf("NEW VARY FOUND\n");
 			double start_frame = op[i].op.vary.start_frame,
 			       end_frame = op[i].op.vary.end_frame,
 			       start_val = op[i].op.vary.start_val,
 			       end_val = op[i].op.vary.end_val;
 			char *name = op[i].op.vary.p->name;
-			printf("%0.2f %0.2f %0.2f %0.2f\n", start_frame, end_frame, start_val, end_val);
-			printf("%s\n", name);
+			//printf("%s\n", name);
+			//printf("%0.4f %0.4f %0.4f %0.4f\n", start_frame, end_frame, start_val, end_val);
 			if (start_frame < 0 || end_frame >= num_frames || start_frame > end_frame) {
 				printf("ERROR: Invalid frame range specified for VARY!\n");
 				exit(0);
 			}
-			double delta_val = (end_val - start_val) / (end_frame - start_frame + 1);
+			double delta_val = (end_val - start_val) / (end_frame - start_frame);
+			//printf("%0.4f\n", delta_val);
 			for (j = start_frame; j <= end_frame; j ++) {
 				struct vary_node *new = (struct vary_node *)malloc(sizeof(struct vary_node));
+				struct vary_node *old = knobs[j];
 				strcpy(new->name, name);
-				new->value = start_val + j * delta_val;
-				new->next = knobs[j];
+				new->value = start_val + (j - start_frame) * delta_val;
+				new->next = old;
 				knobs[j] = new;
-				//printf("%s\n", knobs[j]->name);
 			}
 		}
 	}
@@ -156,10 +159,11 @@ struct vary_node **second_pass() {
 		printf("%d:\n", i);
 		struct vary_node *n = knobs[i];
 		while (n) {
-			printf("\t%s: %0.2f\n", knobs[i]->name, knobs[i]->value);
+			printf("\t%s: %0.4f\n", n->name, n->value);
 			n = n->next;
 		}
 	}
+	print_knobs();
 	return knobs;
 }
 
