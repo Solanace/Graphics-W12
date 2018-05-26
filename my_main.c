@@ -243,7 +243,7 @@ void my_main() {
 	g.blue = 0;
 	double step_3d = 20;
 	double theta;
-	double knob_value, xval, yval, zval;
+	double knob_value, xval, yval, zval, val;
 
 	//Lighting values here for easy access
 	color ambient;
@@ -288,7 +288,6 @@ void my_main() {
 	
 	first_pass();
 	if (num_frames > 1) knobs = second_pass();
-	//printf("%d aksjdhakjfhaksjfhaksjfhakfjahskfjashfkasfjhfkasjah\n", num_frames);
 
 	for (j = 0; j < num_frames; j ++) {
 		printf("Frame %d:\n", j);
@@ -298,10 +297,10 @@ void my_main() {
 				set_value(lookup_symbol(current_node->name), current_node->value);
 				current_node = current_node->next;
 			}
-			print_knobs();
+			//print_knobs();
 		}
 		for (i = 0; i < lastop; i ++) {
-			printf("%d: ",i);
+			//printf("%d: ",i);
 			switch (op[i].opcode) {
 				case SPHERE:
 					/* printf("Sphere: %6.2f %6.2f %6.2f r=%6.2f", */
@@ -392,11 +391,10 @@ void my_main() {
 					xval = op[i].op.move.d[0];
 					yval = op[i].op.move.d[1];
 					zval = op[i].op.move.d[2];
-					printf("Move: %6.2f %6.2f %6.2f", xval, yval, zval);
+					//printf("Move: %6.2f %6.2f %6.2f", xval, yval, zval);
 					if (op[i].op.move.p != NULL) {
 						printf("\tknob: %s",op[i].op.move.p->name);
-						name = op[i].move.p->name;
-						double val = get_val(knobs[j], name);
+						val = get_val(knobs[j], op[i].op.move.p->name);
 						xval *= val;
 						yval *= val;
 						zval *= val;
@@ -411,12 +409,10 @@ void my_main() {
 					xval = op[i].op.scale.d[0];
 					yval = op[i].op.scale.d[1];
 					zval = op[i].op.scale.d[2];
-					printf("Scale: %6.2f %6.2f %6.2f", xval, yval, zval);
+					//printf("Scale: %6.2f %6.2f %6.2f", xval, yval, zval);
 					if (op[i].op.scale.p != NULL) {
-						printf("\tknob: %s",op[i].op.scale.p->name);
-						char *name = op[i].op.move.p->name;
-						name = op[i].scale.p->name;
-						double val = get_val(knobs[j], name);
+						//printf("\tknob: %s",op[i].op.scale.p->name);
+						val = get_val(knobs[j], op[i].op.scale.p->name);
 						xval *= val;
 						yval *= val;
 						zval *= val;
@@ -430,11 +426,10 @@ void my_main() {
 				case ROTATE:
 					xval = op[i].op.rotate.axis;
 					theta = op[i].op.rotate.degrees;
-					printf("Rotate: axis: %6.2f degrees: %6.2f", xval, theta);
+					//printf("Rotate: axis: %6.2f degrees: %6.2f", xval, theta);
 					if (op[i].op.rotate.p != NULL) {
-						printf("\tknob: %s",op[i].op.rotate.p->name);
-						name = op[i].rotate.p->name;
-						double val = get_val(knobs[j], name);
+						//printf("\tknob: %s",op[i].op.rotate.p->name);
+						val = get_val(knobs[j], op[i].op.rotate.p->name);
 						xval *= val;
 						theta *= val;
 					}
@@ -464,16 +459,19 @@ void my_main() {
 					display(t);
 					break;
 			} //end opcode switch
-			printf("\n");
+			//printf("\n");
 		}//end operation loop
 		if (num_frames > 1) {
 			char pic_name[256];
-			sprintf(pic_name, "anim/%03d", j);
+			sprintf(pic_name, "anim/%s%03d.png", name, j);
 			save_extension(t, pic_name);
 			systems = new_stack();
 			tmp = new_matrix(4, 1000);
 			clear_screen(t);
 			clear_zbuffer(zb);
 		}
+	}
+	if (num_frames > 1) {
+		make_animation(name);
 	}
 }

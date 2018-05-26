@@ -42,7 +42,9 @@ stack.o: stack.c stack.h matrix.h
 	$(CC) $(CFLAGS) -c stack.c
 
 clean:
-	rm y.tab.c y.tab.h
-	rm lex.yy.c
-	rm -rf mdl.dSYM
-	rm mdl *.o *.png
+	-rm y.tab.c y.tab.h
+	-rm lex.yy.c
+	-rm -rf mdl.dSYM
+	-rm mdl *.o
+	-rm *.png
+	-rm anim/* *.gif
