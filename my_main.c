@@ -127,7 +127,7 @@ void first_pass() {
   appropirate value.
   ====================*/
 struct vary_node **second_pass() {
-	printf("Start of second pass\n");
+	//printf("Start of second pass\n");
 	struct vary_node **knobs = calloc(num_frames, sizeof(struct vary_node *));
 	int i, j; // i loops through the opcode array, j loops through the knobs array
 	for (i = 0; i < lastop; i ++) {
@@ -241,7 +241,7 @@ void my_main() {
 	g.red = 0;
 	g.green = 0;
 	g.blue = 0;
-	double step_3d = 20;
+	double step_3d = 100;
 	double theta;
 	double knob_value, xval, yval, zval, val;
 
