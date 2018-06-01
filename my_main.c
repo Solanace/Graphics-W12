@@ -297,7 +297,7 @@ void my_main() {
 				set_value(lookup_symbol(current_node->name), current_node->value);
 				current_node = current_node->next;
 			}
-			//print_knobs();
+			print_knobs();
 		}
 		for (i = 0; i < lastop; i ++) {
 			//printf("%d: ",i);
@@ -394,7 +394,9 @@ void my_main() {
 					//printf("Move: %6.2f %6.2f %6.2f", xval, yval, zval);
 					if (op[i].op.move.p != NULL) {
 						printf("\tknob: %s",op[i].op.move.p->name);
-						val = get_val(knobs[j], op[i].op.move.p->name);
+						//val = get_val(knobs[j], op[i].op.move.p->name);
+						SYMTAB *tab = lookup_symbol(op[i].op.move.p->name);
+						//val = tab->s.value;
 						xval *= val;
 						yval *= val;
 						zval *= val;
@@ -412,7 +414,9 @@ void my_main() {
 					//printf("Scale: %6.2f %6.2f %6.2f", xval, yval, zval);
 					if (op[i].op.scale.p != NULL) {
 						//printf("\tknob: %s",op[i].op.scale.p->name);
-						val = get_val(knobs[j], op[i].op.scale.p->name);
+						//val = get_val(knobs[j], op[i].op.scale.p->name);
+						SYMTAB *tab = lookup_symbol(op[i].op.scale.p->name);
+						val = tab->s.value;
 						xval *= val;
 						yval *= val;
 						zval *= val;
@@ -429,7 +433,9 @@ void my_main() {
 					//printf("Rotate: axis: %6.2f degrees: %6.2f", xval, theta);
 					if (op[i].op.rotate.p != NULL) {
 						//printf("\tknob: %s",op[i].op.rotate.p->name);
-						val = get_val(knobs[j], op[i].op.rotate.p->name);
+						//val = get_val(knobs[j], op[i].op.rotate.p->name);
+						SYMTAB *tab = lookup_symbol(op[i].op.rotate.p->name);
+						val = tab->s.value;
 						xval *= val;
 						theta *= val;
 					}
